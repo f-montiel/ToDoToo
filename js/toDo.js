@@ -121,16 +121,25 @@ function createTask(value, newListId) {
     let targetItem = null;
     //Atributo necesario para que se pueda arrastrar un item.
     listItem.draggable = true;
-    //Funcion en la que se identifica el elemento que se esta arrastrando cuando se actva el evento drag start
+    //Array (arreglo) con todos los items de la lista.
     let dragAndDropItems = taskList.getElementsByTagName("li");
+    //Funcion en la que se identifica el elemento que se esta arrastrando cuando se activa el evento drag start
     listItem.ondragstart = (ev) => {
         dragedItem = ev.target;
+        while(dragedItem.parentElement != taskList){
+            dragedItem = dragedItem.parentElement;
+        }
+        console.log(dragedItem);
     };
     // Funcion donde se identifica el elemento donde estamos parados luego de inicar el arrastrado
     // y porteriomente comparar si es el mismo que el elemento arrastardo, en caso de que difieren
     // al elemento donde estoy parado le agrego la clase active para que se pinte de azul
     listItem.ondragenter = (ev) => {
         targetItem = ev.target;
+        while(targetItem.parentElement != taskList){
+            targetItem = targetItem.parentElement;
+        }
+        console.log(targetItem, dragedItem);
         if (targetItem != dragedItem) { targetItem.classList.add("active"); }
     };
     // Funcion que quita la clase active cuando avandono el elemento donde estaba parado en la funcion anterior.
