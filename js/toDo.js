@@ -9,6 +9,8 @@ function createTab(submitEvent) {
     if(submitEvent){
         submitEvent.preventDefault();
     }
+    // Validacion para que no existan dos tab iguales
+    
     // Obtencion del valor del imput
     let tabName = document.getElementById("tabName");
     let tabNameValue = tabName.value;
@@ -42,6 +44,8 @@ function createTab(submitEvent) {
 // Función para crear la seccion donde incluiremos el nuevo formulario y la lista desordenada
 // que utilizaremos en la creacion de los items
 function createArticle(idPrefix) {
+    //quitar los espacios para generar le id
+    idPrefix = quitarEspaciosEnCadenasDeTexto(idPrefix);
     // Seccion donde vamos a agregar el articulo
     let newSection = document.getElementById("listContainer");
     // Creación del articulo
@@ -200,7 +204,7 @@ function activeTab(tab) {
         tabs[i].classList.remove("active");
     }
     tab.classList.add("active");
-    let articleId = tab.textContent + "Article";
+    let articleId = quitarEspaciosEnCadenasDeTexto(tab.textContent) + "Article";
     let articles = document.getElementsByTagName("article");
     for (let i = 0; i < articles.length; i++) {
         articles[i].setAttribute("hidden", "true");
@@ -208,4 +212,15 @@ function activeTab(tab) {
     let activeTab = document.getElementById(articleId);
     activeTab.removeAttribute("hidden");
     let sortableUl = document.getElementById(tab.textContent + "List");
+}
+function quitarEspaciosEnCadenasDeTexto(texto){
+    let textoSinEspacios = "";
+    for(let indice = 0; indice < texto.length; indice++){
+        if(texto[indice]== " "){
+            textoSinEspacios = textoSinEspacios + "";
+        } else {
+            textoSinEspacios = textoSinEspacios + texto[indice];
+        }
+    }
+    return textoSinEspacios;
 }
