@@ -129,7 +129,6 @@ function createTask(value, newListId) {
         while(dragedItem.parentElement != taskList){
             dragedItem = dragedItem.parentElement;
         }
-        console.log(dragedItem);
     };
     // Funcion donde se identifica el elemento donde estamos parados luego de inicar el arrastrado
     // y porteriomente comparar si es el mismo que el elemento arrastardo, en caso de que difieren
@@ -139,12 +138,14 @@ function createTask(value, newListId) {
         while(targetItem.parentElement != taskList){
             targetItem = targetItem.parentElement;
         }
-        console.log(targetItem, dragedItem);
         if (targetItem != dragedItem) { targetItem.classList.add("active"); }
     };
-    // Funcion que quita la clase active cuando avandono el elemento donde estaba parado en la funcion anterior.
-    listItem.ondragleave = () => {
-        targetItem.classList.remove("active");
+    // Funcion que quita la clase active cuando abandono el elemento donde estaba parado en la funcion anterior.
+    // Solo si me muevo entre items, no si me muevo entre elementos del mismo item.
+    listItem.ondragleave = (ev) => {
+            if(ev.fromElement.parentElement == taskList && ev.target == targetItem){
+                targetItem.classList.remove("active");
+            }
       };
     //Funcion que se ejecuta mientras suelto el elemento y quita la clase active de todos los items de la lista
     listItem.ondragend = () => { 
