@@ -178,37 +178,46 @@ function createTask(value, newListId) {
       // Drag and drop para dispositivos tactiles con eventos de touch
       let touchedItem = null;
       listItem.ontouchstart = (evt) => {
+        targetItem = document.elementFromPoint(evt.touches[0].clientX, evt.touches[0].clientY);
         touchedItem = evt.target;
         while(touchedItem.parentElement != taskList){
             touchedItem = touchedItem.parentElement;
         }
-        touchedItem.classList.add("touch", "active");
-        //listItem.classList.add("touch");
-      }
-      listItem.ontouchmove = (evt) => {
-        console.log(evt);
-        // asi puedo identificar el elemento donde estoy parado mientras estoy tocando la pantalla.
-        let targetItem = document.elementFromPoint(evt.touches[0].clientX, evt.touches[0].clientY);
-        //copiado de la otra funcion.
-        if (targetItem != touchedItem && targetItem.parentElement == taskList) {
-          let currentpos = 0;
-          let droppedpos = 0;
-          for (let it=0; it<dragAndDropItems.length; it++) {
-            if (touchedItem == dragAndDropItems[it]) { currentpos = it; }
-            if (targetItem == dragAndDropItems[it]) { droppedpos = it; }
-          }
-          if (currentpos < droppedpos) {
-            targetItem.parentNode.insertBefore(touchedItem, targetItem.nextSibling);
-          } else {
-            targetItem.parentNode.insertBefore(touchedItem, targetItem);
-          }
+        while(targetItem.parentElement != taskList){
+            targetItem = targetItem.parentElement;
         }
+        window.setTimeout(() => {
+            if(touchedItem == targetItem)
+            touchedItem.classList.add("touched", "active");
+        }, 300);
+    }
+
+        listItem.ontouchmove = (evt) => {
+            // asi puedo identificar el elemento donde estoy parado mientras estoy tocando la pantalla.
+            targetItem = document.elementFromPoint(evt.touches[0].clientX, evt.touches[0].clientY);
+            //copiado de la otra funcion.
+            let clases = touchedItem.classList;
+            for(i = 0; i<clases.length; i++){
+                if (targetItem != touchedItem && targetItem.parentElement == taskList && clases[i] == "touched") {
+                  let currentpos = 0;
+                  let droppedpos = 0;
+                  for (let it=0; it<dragAndDropItems.length; it++) {
+                    if (touchedItem == dragAndDropItems[it]) { currentpos = it; }
+                    if (targetItem == dragAndDropItems[it]) { droppedpos = it; }
+                  }
+                  if (currentpos < droppedpos) {
+                    targetItem.parentNode.insertBefore(touchedItem, targetItem.nextSibling);
+                  } else {
+                    targetItem.parentNode.insertBefore(touchedItem, targetItem);
+                  }
+                }
+            }
       }
       listItem.ontouchend = (evt) => {
         touchedItem.classList.remove("touch", "active");
-      }
-      listItem.ontouchcancel = (evt) => {
-        // console.log(evt);
+        touchedItem = "Sin touched Item";
+        targetItem = "Sin Target Item"
+        console.log(targetItem, touchedItem);
       }
     let checkbox = document.createElement("input");
     checkbox.setAttribute("type", "checkbox");
