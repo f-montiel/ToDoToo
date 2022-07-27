@@ -2,15 +2,15 @@
 window.onload = () => {
     document.getElementById("tabName").value = "To Do";
     createTab();
-}
+};
+
+
 // Función para crear los tabs
 function createTab(submitEvent) {
     // Previene que se ejecute el evento del submit
-    if(submitEvent){
+    if (submitEvent) {
         submitEvent.preventDefault();
     }
-    // Validacion para que no existan dos tab iguales
-
     // Obtencion del valor del imput
     let tabName = document.getElementById("tabName");
     let tabNameValue = tabName.value;
@@ -111,16 +111,20 @@ function inputValidation(submitEvent, newInputId, newListId) {
     }
     // slist(document.getElementById(newListId));
 }
-// Función para crear un elemento de una lista.
 
+// Función para crear un elemento de una lista.
 let dragedItem = null; //Variable utilizada para identificar el item arrastrado en el drag and drop.
 
 function createTask(value, newListId) {
     let taskList = document.getElementById(newListId);
     let listItem = document.createElement("li");
-    listItem.classList.add("list-group-item", "d-flex", "align-items-center", "col-12");
-    
-//Drag and Drop
+    listItem.classList.add(
+        "list-group-item",
+        "d-flex",
+        "align-items-center",
+        "col-12"
+    );
+    //Drag and Drop
     //Variable va a contener un array con los items de la ul
     let targetItem = null;
     //Atributo necesario para que se pueda arrastrar un item.
@@ -128,97 +132,147 @@ function createTask(value, newListId) {
     //Array (arreglo) con todos los items de la lista.
     let dragAndDropItems = taskList.getElementsByTagName("li");
     //Funcion en la que se identifica el elemento que se esta arrastrando cuando se activa el evento drag start
+    
     listItem.ondragstart = (ev) => {
         dragedItem = ev.target;
-        while(dragedItem.parentElement != taskList){
+        while (dragedItem.parentElement != taskList) {
             dragedItem = dragedItem.parentElement;
         }
     };
     // Funcion donde se identifica el elemento donde estamos parados luego de inicar el arrastrado
     // y porteriomente comparar si es el mismo que el elemento arrastardo, en caso de que difieren
     // al elemento donde estoy parado le agrego la clase active para que se pinte de azul
+    
     listItem.ondragenter = (ev) => {
         targetItem = ev.target;
-        while(targetItem.parentElement != taskList){
+        while (targetItem.parentElement != taskList) {
             targetItem = targetItem.parentElement;
         }
-        if (targetItem != dragedItem) { targetItem.classList.add("active"); }
+        if (targetItem != dragedItem) {
+            targetItem.classList.add("active");
+        }
     };
     // Funcion que quita la clase active cuando abandono el elemento donde estaba parado en la funcion anterior.
     // Solo si me muevo entre items, no si me muevo entre elementos del mismo item.
+    
     listItem.ondragleave = (ev) => {
-            if(ev.fromElement.parentElement == taskList && ev.target == targetItem){
-                targetItem.classList.remove("active");
-            }
-      };
+        if (
+            ev.fromElement.parentElement == taskList &&
+            ev.target == targetItem
+        ) {
+            targetItem.classList.remove("active");
+        }
+    };
     //Funcion que se ejecuta mientras suelto el elemento y quita la clase active de todos los items de la lista
-    listItem.ondragend = () => { 
+    
+    listItem.ondragend = () => {
         for (let indice of dragAndDropItems) {
             indice.classList.remove("active");
         }
-    }
+    };
     // Funcion que se ejecuta una vez soltado el elemento e identifica el lugar e inserta el elemento donde corresponde.
-    listItem.ondragover = (evt) => { evt.preventDefault(); };
+    
+    listItem.ondragover = (evt) => {
+        evt.preventDefault();
+    };
+    
     listItem.ondrop = (evt) => {
         evt.preventDefault();
         if (targetItem != dragedItem) {
-          let currentpos = 0;
-          let droppedpos = 0;
-          for (let it=0; it<dragAndDropItems.length; it++) {
-            if (dragedItem == dragAndDropItems[it]) { currentpos = it; }
-            if (targetItem == dragAndDropItems[it]) { droppedpos = it; }
-          }
-          if (currentpos < droppedpos) {
-            targetItem.parentNode.insertBefore(dragedItem, targetItem.nextSibling);
-          } else {
-            targetItem.parentNode.insertBefore(dragedItem, targetItem);
-          }
+            let currentpos = 0;
+            let droppedpos = 0;
+            for (let it = 0; it < dragAndDropItems.length; it++) {
+                if (dragedItem == dragAndDropItems[it]) {
+                    currentpos = it;
+                }
+                if (targetItem == dragAndDropItems[it]) {
+                    droppedpos = it;
+                }
+            }
+            if (currentpos < droppedpos) {
+                targetItem.parentNode.insertBefore(
+                    dragedItem,
+                    targetItem.nextSibling
+                );
+            } else {
+                targetItem.parentNode.insertBefore(dragedItem, targetItem);
+            }
         }
-      }
-      // Drag and drop para dispositivos tactiles con eventos de touch
-      let touchedItem = null;
-      listItem.ontouchstart = (evt) => {
-        targetItem = document.elementFromPoint(evt.touches[0].clientX, evt.touches[0].clientY);
+    };
+    // Drag and drop para dispositivos tactiles con eventos de touch
+    let touchedItem = null;
+    
+    listItem.ontouchstart = (evt) => {
+        targetItem = document.elementFromPoint(
+            evt.touches[0].clientX,
+            evt.touches[0].clientY
+        );
         touchedItem = evt.target;
-        while(touchedItem.parentElement != taskList){
+        while (touchedItem.parentElement != taskList) {
             touchedItem = touchedItem.parentElement;
         }
-        while(targetItem.parentElement != taskList){
+        while (targetItem.parentElement != taskList) {
             targetItem = targetItem.parentElement;
         }
         window.setTimeout(() => {
-            if(touchedItem == targetItem)
-            touchedItem.classList.add("touched", "active");
-        }, 300);
-    }
+            if (touchedItem == targetItem)
+                touchedItem.classList.add("touched", "active");
+        }, 500);
+    };
 
-        listItem.ontouchmove = (evt) => {
-            // asi puedo identificar el elemento donde estoy parado mientras estoy tocando la pantalla.
-            targetItem = document.elementFromPoint(evt.touches[0].clientX, evt.touches[0].clientY);
-            //copiado de la otra funcion.
-            let clases = touchedItem.classList;
-            for(i = 0; i<clases.length; i++){
-                if (targetItem != touchedItem && targetItem.parentElement == taskList && clases[i] == "touched") {
-                  let currentpos = 0;
-                  let droppedpos = 0;
-                  for (let it=0; it<dragAndDropItems.length; it++) {
-                    if (touchedItem == dragAndDropItems[it]) { currentpos = it; }
-                    if (targetItem == dragAndDropItems[it]) { droppedpos = it; }
-                  }
-                  if (currentpos < droppedpos) {
-                    targetItem.parentNode.insertBefore(touchedItem, targetItem.nextSibling);
-                  } else {
+    
+    listItem.ontouchmove = (evt) => {
+        window.onscroll = () => {
+            console.log("Scroleando");
+            console.log(touchedItem);
+            touchedItem.classList.remove("touch", "active");
+        }
+        let clases = touchedItem.classList;
+        for (i = 0; i < clases.length; i++) {
+            if (clases[i] == "touched") {
+                evt.preventDefault();
+            }
+        }
+        // asi puedo identificar el elemento donde estoy parado mientras estoy tocando la pantalla.
+        targetItem = document.elementFromPoint(
+            evt.touches[0].clientX,
+            evt.touches[0].clientY
+        );
+        //copiado de la otra funcion.
+        for (i = 0; i < clases.length; i++) {
+            if (
+                targetItem != touchedItem &&
+                targetItem.parentElement == taskList &&
+                clases[i] == "touched"
+            ) {
+                let currentpos = 0;
+                let droppedpos = 0;
+                for (let it = 0; it < dragAndDropItems.length; it++) {
+                    if (touchedItem == dragAndDropItems[it]) {
+                        currentpos = it;
+                    }
+                    if (targetItem == dragAndDropItems[it]) {
+                        droppedpos = it;
+                    }
+                }
+                if (currentpos < droppedpos) {
+                    targetItem.parentNode.insertBefore(
+                        touchedItem,
+                        targetItem.nextSibling
+                    );
+                } else {
                     targetItem.parentNode.insertBefore(touchedItem, targetItem);
-                  }
                 }
             }
-      }
-      listItem.ontouchend = (evt) => {
+        }
+    };
+    
+    listItem.ontouchend = (evt) => {
         touchedItem.classList.remove("touch", "active");
         touchedItem = "Sin touched Item";
-        targetItem = "Sin Target Item"
-        console.log(targetItem, touchedItem);
-      }
+        targetItem = "Sin Target Item";
+    };
+
     let checkbox = document.createElement("input");
     checkbox.setAttribute("type", "checkbox");
     let paragraph = document.createElement("p");
@@ -235,6 +289,7 @@ function createTask(value, newListId) {
     let taskListItem = taskList.appendChild(listItem);
     let deleteIcon = listItem.appendChild(link);
 }
+
 function deleteTask(taskListChildItem) {
     let taskListItem = taskListChildItem.parentElement;
     taskListItem.remove();
@@ -257,10 +312,11 @@ function activeTab(tab) {
     activeTab.removeAttribute("hidden");
     let sortableUl = document.getElementById(tab.textContent + "List");
 }
-function quitarEspaciosEnCadenasDeTexto(texto){
+
+function quitarEspaciosEnCadenasDeTexto(texto) {
     let textoSinEspacios = "";
-    for(let indice = 0; indice < texto.length; indice++){
-        if(texto[indice]== " "){
+    for (let indice = 0; indice < texto.length; indice++) {
+        if (texto[indice] == " ") {
             textoSinEspacios = textoSinEspacios + "";
         } else {
             textoSinEspacios = textoSinEspacios + texto[indice];
