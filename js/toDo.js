@@ -14,31 +14,35 @@ function createTab(submitEvent) {
     // Obtencion del valor del imput
     let tabName = document.getElementById("tabName");
     let tabNameValue = tabName.value;
-    // Obtencion de la Unorder List donde se crearan los tabs
-    let toDoNav = document.getElementById("toDoNav");
-    // Creacion del list item, agregado de la clases de boostrap correspondiente.
-    let toDoTab = document.createElement("li");
-    toDoTab.classList.add("nav-item");
-    //agrego la clase al item para identificar las posicion de creacion
-    toDoTab.classList.add("todo-li");
-    // Creacion del link(a) que contiene el nombre del tab, asignacion de clase y atributos
-    let toDoA = document.createElement("a");
-    toDoA.classList.add("nav-link");
-    toDoA.setAttribute("href", "#");
-    toDoA.addEventListener("click", function () {
-        activeTab(this);
-    });
-    toDoA.textContent = tabNameValue;
-    // Insercion del link en el list item
-    toDoTab.appendChild(toDoA);
-    // Identificacion de la posicion en la que se insertara en nuevo tab (con la clase todo-li con la que se crean los items de la ul)
-    let position = document.getElementsByClassName("todo-li").length;
-    // Insercion del item (li) en la unorder list (ul)
-    toDoNav.insertBefore(toDoTab, toDoNav.children[position]);
-    //Limpiado del valor del imput que no esta funcionando.3
-    createArticle(tabNameValue);
-    activeTab(toDoA);
-    tabName.value = "";
+    if(!tabNameValue){
+        alert("El campo Nombre es obligatorio");
+    } else {
+        // Obtencion de la Unorder List donde se crearan los tabs
+        let toDoNav = document.getElementById("toDoNav");
+        // Creacion del list item, agregado de la clases de boostrap correspondiente.
+        let toDoTab = document.createElement("li");
+        toDoTab.classList.add("nav-item");
+        //agrego la clase al item para identificar las posicion de creacion
+        toDoTab.classList.add("todo-li");
+        // Creacion del link(a) que contiene el nombre del tab, asignacion de clase y atributos
+        let toDoA = document.createElement("a");
+        toDoA.classList.add("nav-link");
+        toDoA.setAttribute("href", "#");
+        toDoA.addEventListener("click", function () {
+            activeTab(this);
+        });
+        toDoA.textContent = tabNameValue;
+        // Insercion del link en el list item
+        toDoTab.appendChild(toDoA);
+        // Identificacion de la posicion en la que se insertara en nuevo tab (con la clase todo-li con la que se crean los items de la ul)
+        let position = document.getElementsByClassName("todo-li").length;
+        // Insercion del item (li) en la unorder list (ul)
+        toDoNav.insertBefore(toDoTab, toDoNav.children[position]);
+        //Limpiado del valor del imput que no esta funcionando.3
+        createArticle(tabNameValue);
+        activeTab(toDoA);
+        tabName.value = "";
+    }
 }
 
 // Función para crear la seccion donde incluiremos el nuevo formulario y la lista desordenada
@@ -312,7 +316,7 @@ function activeTab(tab) {
     activeTab.removeAttribute("hidden");
     let sortableUl = document.getElementById(tab.textContent + "List");
 }
-
+// Funcion para quitar los espacios en una cadena de texto
 function quitarEspaciosEnCadenasDeTexto(texto) {
     let textoSinEspacios = "";
     for (let indice = 0; indice < texto.length; indice++) {
